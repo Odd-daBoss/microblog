@@ -1,0 +1,10 @@
+---
+layout: layouts/blog.njk
+date: Last Modified
+title: Post#1
+tags:
+  - post
+---
+This is the first post! The update is here on the same line. แล้วเพิ่มรูปภาพไว้ดูด้วย
+![Sample Image](https://res.cloudinary.com/sdees-reallife/image/upload/v1741061073/IMG_1423_jjocvy.jpg)
+

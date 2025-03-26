@@ -1,0 +1,26 @@
+---
+layout: layouts/blog.njk
+date: Last Modified
+title: This is the title
+tags:
+>reading<  - reading
+---
+
+(defun check-tags ()
+  "Check tags in front matter"
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (re-search-forward "^tags:\\s-*" nil t)
+	(forward-line)
+	(setq tagLine
+		  (buffer-substring-no-properties
+		   (line-beginning-position)
+		   (line-end-position)))
+	;;(re-search-forward "/YES!/gm" (line-end-position) t)
+	;;(replace-string-in-region "YES!" "YES!")
+	(setq tag
+		  (substring tagLine 4))
+	(insert ">" tag "<")))
+
+(check-tags)

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Micro-blogging</title>
+
+    <!-- Link to Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600&family=Athiti:wght@300;400&display=swap" rel="stylesheet">
+    
+    <!-- Link to Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        /* Custom Fonts */
+        body {
+            font-family: 'Athiti', sans-serif;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Prompt', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 py-6 px-4">
+    <div class="max-w-2xl mx-auto p-6">
+
+    <header class="text-center mb-8">
+        <h1 class="text-3xl font-bold text-gray-500">Odd's Microblog</h1>
+        <p class="text-gray-600">Quick thoughts, updates, and ideas!</p>
+    </header>
+
+    <!-- Posts Section -->
+    <div class="space-y-8">
+        <!-- Post 1 -->
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+            <h3 class="text-2xl font-semibold text-gray-900">My First Post</h3>
+            <p class="text-lg text-gray-600 mt-2">This is the first post of my microblog. I’m excited to share my thoughts with you all!</p>
+        </div>
+
+        <!-- Post 2 -->
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+            <h3 class="text-2xl font-semibold text-gray-900">Exploring New Tech</h3>
+            <p class="text-lg text-gray-600 mt-2">Today, I’ve been learning about new technologies, and I’m fascinated by the potential of AI and machine learning!</p>
+        </div>
+
+        <!-- Post 3 -->
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+            <h3 class="text-2xl font-semibold text-gray-900">A Day in the Life</h3>
+            <p class="text-lg text-gray-600 mt-2">Just another day working and thinking about new ideas for my projects. Here’s what’s on my mind right now...</p>
+        </div>
+    </div>
+
+    <!-- Pagination Section -->
+        <div class="flex justify-between mt-6">
+            <button class="bg-gray-300 text-gray-700 px-4 py-2 rounded disabled:opacity-50" id="prevPage" disabled>🡠 Previous</button>
+            <button class="bg-gray-300 text-gray-700 px-4 py-2 rounded" id="nextPage">Next 🡢</button>
+    </div>
+    <div class="flex justify-between mt-6">
+        <nav class="inline-flex items-center space-x-4">
+            <a href="#" class="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700 flex items-center">
+                <!-- Previous Arrow -->
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+                Previous
+            </a>
+            <a href="#" class="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700 flex items-center">
+                Next
+                <!-- Next Arrow -->
+                <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </a>
+        </nav>
+    </div>
+
+    <footer class="mt-12 text-center text-gray-600 text-sm">
+        <p>&copy; Since 2025.03.06 :: All rights reserved.</p>
+    </footer>
+</div>
+</body>
+</html>

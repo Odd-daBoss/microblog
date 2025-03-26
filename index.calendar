@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Calendar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex items-center justify-center min-h-screen bg-gray-100">
+
+    <div class="bg-white p-5 rounded-lg shadow-lg w-80">
+        <!-- Navigation -->
+        <div class="flex justify-between items-center mb-2">
+            <button id="prevMonth" class="px-2 py-1 bg-gray-300 rounded">&lt;</button>
+            <h2 id="monthTitle" class="text-lg font-bold"></h2>
+            <button id="nextMonth" class="px-2 py-1 bg-gray-300 rounded">&gt;</button>
+        </div>
+
+        <!-- Weekday Labels -->
+        <div class="grid grid-cols-7 text-center font-bold">
+            <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+        </div>
+
+        <!-- Calendar Grid -->
+        <div id="calendar" class="grid grid-cols-7 text-center gap-1 mt-2">
+            <!-- Days will be generated dynamically -->
+        </div>
+    </div>
+
+    <script>
+        let currentYear = new Date().getFullYear();
+        let currentMonth = new Date().getMonth();
+
+        // Define blog post links (example: linking certain days)
+        const blogPosts = {
+            "2025-03-13": "https://example.com/blog-post-13",
+            "2025-03-20": "https://example.com/blog-post-20"
+        };
+
+        function generateCalendar(year, month) {
+            const calendar = document.getElementById("calendar");
+            const monthTitle = document.getElementById("monthTitle");
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const today = new Date();
+            const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
+
+            monthTitle.textContent = new Date(year, month).toLocaleString('default', { month: 'long', year: 'numeric' });
+            calendar.innerHTML = ""; // Clear previous content
+
+            // Add empty cells for first week's offset
+            for (let i = 0; i < firstDay; i++) {
+                calendar.innerHTML += `<div></div>`;
+            }
+
+            // Generate days dynamically
+            for (let day = 1; day <= daysInMonth; day++) {
+                let dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                let link = blogPosts[dateKey] ? `<a href="${blogPosts[dateKey]}" class="underline">` : "";
+                let closeLink = blogPosts[dateKey] ? `</a>` : "";
+                let isToday = isCurrentMonth && day === today.getDate() ? "bg-blue-500 text-white" : "bg-gray-200";
+
+                calendar.innerHTML += `<div class="p-2 ${isToday} rounded">${link}${day}${closeLink}</div>`;
+            }
+        }
+
+        function changeMonth(offset) {
+            currentMonth += offset;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            } else if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            generateCalendar(currentYear, currentMonth);
+        }
+
+        document.getElementById("prevMonth").addEventListener("click", () => changeMonth(-1));
+        document.getElementById("nextMonth").addEventListener("click", () => changeMonth(1));
+
+        generateCalendar(currentYear, currentMonth);
+    </script>
+
+</body>
+</html>

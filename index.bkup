@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Calendar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex items-center justify-center min-h-screen bg-gray-100">
+
+    <div class="bg-white p-5 rounded-lg shadow-lg w-80">
+        <!-- Navigation -->
+        <div class="flex justify-between items-center mb-2">
+            <button id="prevMonth" class="px-2 py-1 bg-gray-300 rounded">🢐</button>
+            <select id="monthSelect" class="px-2 py-1 bg-gray-200 rounded"></select>
+            <button id="nextMonth" class="px-2 py-1 bg-gray-300 rounded">🢒</button>
+        </div>
+
+        <!-- Back to Today Button -->
+        <button id="todayButton" class="w-full py-1 bg-blue-500 text-white rounded mb-2">Back to Today</button>
+
+        <!-- Weekday Labels -->
+        <div class="grid grid-cols-7 text-center font-bold">
+            <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+        </div>
+
+        <!-- Calendar Grid -->
+        <div id="calendar" class="grid grid-cols-7 text-center gap-1 mt-2">
+            <!-- Days will be generated dynamically -->
+        </div>
+    </div>
+
+    <script>
+        let currentYear = new Date().getFullYear();
+        let currentMonth = new Date().getMonth();
+
+        // Define blog post links and events (example: linking certain days with tooltips)
+        const events = {
+            "2025-03-13": { link: "https://example.com/blog-post-13", title: "Special Event on March 13" },
+            "2025-03-20": { link: "https://example.com/blog-post-20", title: "Blog Post Released!" }
+        };
+
+        function generateCalendar(year, month) {
+            const calendar = document.getElementById("calendar");
+            const monthSelect = document.getElementById("monthSelect");
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const today = new Date();
+            const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
+
+            monthSelect.value = `${year}-${String(month + 1).padStart(2, '0')}`;
+            calendar.innerHTML = ""; // Clear previous content
+
+            // Add empty cells for first week's offset
+            for (let i = 0; i < firstDay; i++) {
+                calendar.innerHTML += `<div></div>`;
+            }
+
+            // Generate days dynamically
+            for (let day = 1; day <= daysInMonth; day++) {
+                let dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                let event = events[dateKey];
+                let isToday = isCurrentMonth && day === today.getDate() ? "bg-blue-500 text-white" : "bg-gray-200";
+                let tooltip = event ? `title="${event.title}"` : "";
+                let linkStart = event ? `<a href="${event.link}" class="underline" ${tooltip}>` : "";
+                let linkEnd = event ? `</a>` : "";
+
+                calendar.innerHTML += `<div class="p-2 ${isToday} rounded" ${tooltip}>${linkStart}${day}${linkEnd}</div>`;
+            }
+        }
+
+        function changeMonth(offset) {
+            currentMonth += offset;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            } else if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            generateCalendar(currentYear, currentMonth);
+        }
+
+        function goToToday() {
+            currentYear = new Date().getFullYear();
+            currentMonth = new Date().getMonth();
+            generateCalendar(currentYear, currentMonth);
+        }
+
+        function populateMonthDropdown() {
+            const monthSelect = document.getElementById("monthSelect");
+            for (let y = currentYear - 2; y <= currentYear + 2; y++) {
+                for (let m = 0; m < 12; m++) {
+                    let value = `${y}-${String(m + 1).padStart(2, '0')}`;
+                    let label = new Date(y, m).toLocaleString('default', { month: 'long', year: 'numeric' });
+                    monthSelect.innerHTML += `<option value="${value}">${label}</option>`;
+                }
+            }
+            monthSelect.addEventListener("change", function () {
+                let [year, month] = this.value.split("-");
+                currentYear = parseInt(year);
+                currentMonth = parseInt(month) - 1;
+                generateCalendar(currentYear, currentMonth);
+            });
+        }
+
+        document.getElementById("prevMonth").addEventListener("click", () => changeMonth(-1));
+        document.getElementById("nextMonth").addEventListener("click", () => changeMonth(1));
+        document.getElementById("todayButton").addEventListener("click", goToToday);
+
+        populateMonthDropdown();
+        generateCalendar(currentYear, currentMonth);
+    </script>
+
+</body>
+</html>

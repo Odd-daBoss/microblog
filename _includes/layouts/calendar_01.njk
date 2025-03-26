@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% include "components/head.njk" %}
+
+<body class="bg-gray-100 text-gray-800 py-6 px-4">
+  <div class="max-w-2xl mx-auto p-6">
+    {% include "components/header.njk" %}
+
+    <div class="space-y-8">
+      {% set bannerAction = action %}
+      {% set bannerTarget = target %}
+      {% include "components/banner.njk" %}
+
+      <!-- Calendar Section -->
+      <div class="bg-white p-5 rounded-lg shadow-lg w-80 mx-auto">
+        <!-- Navigation -->
+        <div class="flex justify-between items-center mb-2">
+          <button id="prevMonth" class="px-2 py-1 bg-gray-300 rounded">🢐</button>
+          <select id="monthSelect" class="px-2 py-1 bg-gray-200 rounded"></select>
+          <button id="nextMonth" class="px-2 py-1 bg-gray-300 rounded">🢒</button>
+        </div>
+
+        <!-- Back to Today Button -->
+        <button id="todayButton" class="w-full py-1 bg-lime-500 text-white rounded mb-2">Back to Today</button>
+
+        <!-- Weekday Labels -->
+        <div class="grid grid-cols-7 text-center font-bold">
+          <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+        </div>
+
+        <!-- Calendar Grid -->
+        <div id="calendar" class="grid grid-cols-7 text-center gap-1 mt-2"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const calendar = document.getElementById("calendar");
+      const monthSelect = document.getElementById("monthSelect");
+      const prevMonthBtn = document.getElementById("prevMonth");
+      const nextMonthBtn = document.getElementById("nextMonth");
+      const todayButton = document.getElementById("todayButton");
+
+      const taskModal = document.getElementById("taskModal");
+      const modalTitle = document.getElementById("modalTitle");
+      const taskInput = document.getElementById("taskInput");
+      const saveTask = document.getElementById("saveTask");
+      const closeModal = document.getElementById("closeModal");
+
+      let currentDate = new Date();
+      let events = JSON.parse(localStorage.getItem("events")) || {};
+
+      function generateCalendar(date) {
+        calendar.innerHTML = "";
+        const year = date.getFullYear();
+        const month = date.getMonth();
+        const firstDay = new Date(year, month, 1).getDay();
+        const lastDate = new Date(year, month + 1, 0).getDate();
+
+        // Fill empty slots before the first day
+        for (let i = 0; i < firstDay; i++) {
+          calendar.innerHTML += `<div class="p-2"></div>`;
+        }
+
+        // Populate actual days
+        for (let day = 1; day <= lastDate; day++) {
+          const fullDate = `${year}-${month + 1}-${day}`;
+          const isToday = day === new Date().getDate() && month === new Date().getMonth() && year === new Date().getFullYear();
+          const eventExists = events[fullDate];
+
+          calendar.innerHTML += `
+            <button data-date="${year}-${month}-${day}" class="day p-2 rounded-lg transition relative ${isToday ? 'bg-lime-500 text-white font-bold' : 'bg-gray-200 hover:bg-gray-300'}">
+              ${day}
+              ${eventExists ? '<span class="absolute top-0 right-0 w-2 h-2 bg-red-400 rounded-full"></span>' : ''}
+            </button>`;
+        }
+
+        // Update month select
+        monthSelect.innerHTML = "";
+        for (let i = 0; i < 12; i++) {
+          const option = document.createElement("option");
+          option.value = i;
+          option.text = new Date(year, i, 1).toLocaleString('default', { month: 'long' }) + " " + year;
+          option.selected = i === month;
+          monthSelect.appendChild(option);
+        }
+
+        // Add event listeners for days
+        document.querySelectorAll(".day").forEach(button => {
+          button.addEventListener("click", openTaskModal);
+        });
+      }
+
+      function openTaskModal(event) {
+        selectedDate = event.currentTarget.dataset.date;
+        modalTitle.textContent = `Tasks for ${selectedDate}`;
+        taskInput.value = events[selectedDate] || "";
+        taskModal.classList.remove("hidden");
+      }
+
+      function saveTaskData() {
+        if (selectedDate) {
+          events[selectedDate] = taskInput.value.trim();
+          if (!events[selectedDate]) delete events[selectedDate]; // Remove empty tasks
+          localStorage.setItem("events", JSON.stringify(events));
+          taskModal.classList.add("hidden");
+          generateCalendar(currentDate);
+        }
+      }
+
+      // Event Listeners
+      prevMonthBtn.addEventListener("click", () => {
+        currentDate.setMonth(currentDate.getMonth() - 1);
+        generateCalendar(currentDate);
+      });
+
+      nextMonthBtn.addEventListener("click", () => {
+        currentDate.setMonth(currentDate.getMonth() + 1);
+        generateCalendar(currentDate);
+      });
+
+      monthSelect.addEventListener("change", () => {
+        currentDate.setMonth(monthSelect.value);
+        generateCalendar(currentDate);
+      });
+
+      todayButton.addEventListener("click", () => {
+        currentDate = new Date();
+        generateCalendar(currentDate);
+      });
+
+      saveTask.addEventListener("click", saveTaskData);
+      closeModal.addEventListener("click", () => taskModal.classList.add("hidden"));
+
+      // Initialize Calendar
+      generateCalendar(currentDate);
+    });
+  </script>
+</body>
+</html>

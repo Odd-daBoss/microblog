@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microblog</title>
+
+    <!-- Link to Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600&family=Athiti:wght@300;400&display=swap" rel="stylesheet">
+
+    <style>
+        /* Apply Google Fonts */
+        body {
+            font-family: 'Athiti', sans-serif;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Prompt', sans-serif;
+        }
+    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-900">
+    <div class="max-w-2xl mx-auto p-6">
+        <header class="mb-6 text-center">
+            <h1 class="text-3xl font-bold">Odd's Microblog</h1>
+            <p class="text-gray-600">Quick thoughts, updates, and ideas.</p>
+        </header>
+
+        <main id="posts-container">
+            <!-- Posts will be grouped here -->
+        </main>
+
+        <!-- Pagination -->
+        <div class="flex justify-between mt-6">
+            <button class="bg-gray-300 text-gray-700 px-4 py-2 rounded disabled:opacity-50" id="prevPage" disabled>Previous</button>
+            <button class="bg-gray-300 text-gray-700 px-4 py-2 rounded" id="nextPage">Next</button>
+        </div>
+
+        <script>
+            const postsData = [
+                { date: '2025-03-06', text: 'Just started working on a new project today! Excited to see where it goes. 🚀' },
+                { date: '2025-03-05', text: 'Enjoying a great cup of coffee while coding. ☕ - ภาษาไทยที่นี่ด้วย' },
+                { date: '2025-02-20', text: 'Finished reading a great book. Highly recommend it! 📖' },
+                { date: '2025-02-15', text: 'Exploring new frameworks for my next project. 🔍' },
+                { date: '2025-01-30', text: 'Had a productive day learning Tailwind CSS! 🎨' },
+                { date: '2025-03-04', text: 'Just started working on a new project today! Excited to see where it goes. 🚀' },
+                { date: '2025-03-01', text: 'Enjoying a great cup of coffee while coding. ☕ - ภาษาไทยที่นี่ด้วย' },
+                { date: '2025-02-19', text: 'Finished reading a great book. Highly recommend it! 📖' },
+                { date: '2025-02-14', text: 'Exploring new frameworks for my next project. 🔍' },
+                { date: '2025-01-28', text: 'Had a productive day learning Tailwind CSS! 🎨' },
+            ];
+
+            let currentPage = 1;
+            const postsPerPage = 2;
+            const postsContainer = document.getElementById('posts-container');
+
+            function groupByMonth(posts) {
+                return posts.reduce((groups, post) => {
+                    const month = post.date.slice(0, 7); // YYYY-MM
+                    if (!groups[month]) groups[month] = [];
+                    groups[month].push(post);
+                    return groups;
+                }, {});
+            }
+
+            const groupedPosts = groupByMonth(postsData);
+            const months = Object.keys(groupedPosts).sort((a, b) => b.localeCompare(a));
+            const totalPages = Math.ceil(months.length / postsPerPage);
+
+            function renderPosts(page) {
+                postsContainer.innerHTML = '';
+                const startIndex = (page - 1) * postsPerPage;
+                const selectedMonths = months.slice(startIndex, startIndex + postsPerPage);
+                
+                selectedMonths.forEach(month => {
+                    const monthContainer = document.createElement('div');
+                    monthContainer.className = 'mb-6';
+                    monthContainer.innerHTML = `<h2 class='text-xl font-bold mb-2'>${month}</h2>`;
+                    
+                    groupedPosts[month].forEach(post => {
+                        const postElement = document.createElement('article');
+                        postElement.className = 'bg-white p-4 rounded-lg shadow mb-4';
+                        postElement.innerHTML = `
+                            <p class='text-gray-800'>${post.text}</p>
+                            <p class='text-sm text-gray-500 mt-2'>${post.date}</p>
+                        `;
+                        monthContainer.appendChild(postElement);
+                    });
+                    
+                    postsContainer.appendChild(monthContainer);
+                });
+                
+                document.getElementById('prevPage').disabled = page === 1;
+                document.getElementById('nextPage').disabled = page === totalPages;
+            }
+
+            document.getElementById('prevPage').addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderPosts(currentPage);
+                }
+            });
+
+            document.getElementById('nextPage').addEventListener('click', () => {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    renderPosts(currentPage);
+                }
+            });
+
+            renderPosts(currentPage);
+        </script>
+    </div>
+</body>
+</html>
