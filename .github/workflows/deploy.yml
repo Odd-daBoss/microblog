@@ -27,7 +27,7 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "_site"
+          path: "./_site"
 
   deploy:
     needs: build
